@@ -1,0 +1,9 @@
+torch
+argparse
+numpy
+transformers
+nltk
+opencv_python
+pandas
+Pillow
+scikit_learn

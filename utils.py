@@ -5,7 +5,6 @@ import os
 from PIL import Image
 from transformers import AutoFeatureExtractor
 from transformers import BertTokenizer
-from sklearn.metrics import precision_score, recall_score, f1_score
 
 feature_extractor = AutoFeatureExtractor.from_pretrained("microsoft/resnet-152")
 tokenizer = BertTokenizer.from_pretrained('bert-base-uncased')
@@ -73,9 +72,6 @@ def clean_text(text: bytes):
     return decode
 
 def data_preprocess(train_data_list, test_data_list):
-    """
-    数据预处理，清洗文本数据
-    """
 
     for data in train_data_list:
         data['text'] = clean_text(data['text'])
@@ -96,9 +92,6 @@ def collate_fn(data_list):
     return guid, None if tag[0] == None else torch.LongTensor(tag), image, text
 
 def get_data_loader(train_data_list, test_data_list) -> (DataLoader, DataLoader, DataLoader):
-    """
-    生成数据负载器
-    """
 
     train_data_length = int(len(train_data_list) * 0.9)
     valid_data_length = len(train_data_list) - train_data_length
@@ -131,12 +124,3 @@ def get_data_loader(train_data_list, test_data_list) -> (DataLoader, DataLoader,
     return train_data_loader, valid_data_loader, test_data_loader
 
 
-def calc_metrics(target, pred):
-
-    precision_w = precision_score(target, pred, average='weighted')
-    recall_w = recall_score(target, pred, average='weighted')
-    f1_w = f1_score(target, pred, average='weighted')
-    precision = precision_score(target, pred, average='macro')
-    recall = recall_score(target, pred, average='macro')
-    f1 = f1_score(target, pred, average='macro')
-    return precision_w, recall_w, f1_w, precision, recall, f1
